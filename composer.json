@@ -1,0 +1,28 @@
+{
+    "name": "mohammadreza/astro-orm",
+    "description": "Simple Object Relational Mapper for manipulate data with fluent interface.",
+    "keywords": ["database", "sql", "orm", "fluent-interface"],
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohammadreza",
+            "email": "mohammadreza.rahimi93@yahoo.com",
+            "role": "developer"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
