@@ -34,7 +34,7 @@ class Config
      * @throws ConfigFileNotFoundException
      * @return string|array|null Return null when key does not exists in config file
      */
-    public static function get(string $fileName, string $key = null): string|array|null
+    public static function get(string $fileName, ?string $key = null): string|array|null
     {
         $config = self::getContentsFile($fileName);
 
