@@ -27,7 +27,7 @@ class ConfigTest extends TestCase
     {
         $config = Config::get('database', 'pdo_testing');
         $expectedData = [
-            'dirver' => 'mysql',
+            'driver' => 'mysql',
             'host' => 'localhost',
             'db_name' => 'orm_testing',
             'db_user' => 'root',
