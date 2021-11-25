@@ -7,10 +7,20 @@ use App\Database\PDOQueryBuilder;
 
 class PDOQueryBuilderTest extends TestCase
 {
+    private $queryBuilder;
+
+    public function setUp(): void
+    {
+        $this->queryBuilder = new PDOQueryBuilder();
+
+        PDOQueryBuilder::beginTransaction();
+        parent::setUp();
+    }
+
     public function testItCanCreateData(): void
     {        
         $result = $this->insertIntoDb();
-
+        
         $this->assertIsInt($result);
         $this->assertGreaterThan(0, $result);
     }
@@ -58,6 +68,9 @@ class PDOQueryBuilderTest extends TestCase
 
     public function tearDown(): void
     {
-        PDOQueryBuilder::truncateAllTable();
+        // PDOQueryBuilder::truncateAllTable();
+
+        PDOQueryBuilder::rollback();
+        parent::tearDown();
     }
 }

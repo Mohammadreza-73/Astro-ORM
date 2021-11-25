@@ -44,7 +44,7 @@ class PDOQueryBuilder
         $fields = implode(', ', $fields);
         $placeHolder = implode(', ', $placeHolders);
         
-        $sql = "INSERT INTO " . self::$table . " ({$fields}) values({$placeHolder})";
+        $sql = "INSERT INTO " . self::$table . " ({$fields}) VALUES({$placeHolder})";
         $stmt = self::$pdo->prepare($sql);
         $stmt->execute(array_values($data));
 
@@ -67,7 +67,7 @@ class PDOQueryBuilder
         }
         
         $fields = implode(', ', $fields);
-        $conditions = implode(' and ', $this->conditions);
+        $conditions = implode(' AND ', $this->conditions);
 
         $sql = "UPDATE " . self::$table . " SET {$fields} WHERE {$conditions}";
         $stmt = self::$pdo->prepare($sql);
@@ -78,7 +78,7 @@ class PDOQueryBuilder
 
     public function delete()
     {
-        $conditions = implode(' and ', $this->conditions);
+        $conditions = implode(' AND ', $this->conditions);
         
         $sql = "DELETE FROM " . self::$table . " WHERE {$conditions}";
         $stmt = self::$pdo->prepare($sql);
@@ -95,5 +95,15 @@ class PDOQueryBuilder
         foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $table) {
             self::$pdo->prepare("TRUNCATE TABLE `{$table}`")->execute();
         }
+    }
+
+    public static function beginTransaction(): void
+    {
+        self::$pdo->beginTransaction();
+    }
+
+    public static function rollback(): void
+    {
+        self::$pdo->rollback();       
     }
 }
