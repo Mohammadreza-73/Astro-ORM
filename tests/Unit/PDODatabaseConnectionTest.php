@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use PDO;
-use App\Helpers\Config;
+use App\Traits\HasConfig;
 use PHPUnit\Framework\TestCase;
 use App\Database\PDODatabaseConnection;
 use App\Exceptions\ConfigNotValidException;
@@ -12,6 +12,8 @@ use App\Exceptions\PDODatabaseConnectionException;
 
 class PDODatabaseConnectionTest extends TestCase
 {
+    use HasConfig;
+    
     public function testPDODatabaseConnectionImplementsDatabaseConnectionInterface(): void
     {
         $config = $this->getConfig();
@@ -57,10 +59,5 @@ class PDODatabaseConnectionTest extends TestCase
         unset($config['db_name']);
         $pdoConnection = new PDODatabaseConnection($config);
         $pdoConnection->connect();
-    }
-
-    private function getConfig(): array
-    {
-        return Config::get('database', 'pdo_testing');
     }
 }
