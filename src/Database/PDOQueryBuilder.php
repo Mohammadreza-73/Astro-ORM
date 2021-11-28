@@ -62,16 +62,27 @@ class PDOQueryBuilder
     public function update(array $data)
     {
         $fields = [];
+        $params = [];
         foreach ($data as $column => $value) {
-            $fields[] = "{$column}='{$value}'";
+            $fields[] = "{$column}=?";
+            $params[] = $value;
         }
         
         $fields = implode(', ', $fields);
         $conditions = implode(' AND ', $this->conditions);
 
+        /** 
+         * Make array of params for sanitization and
+         * be valued in execute method.
+         * 
+         * First of all use update values
+         * then use condition values
+         */
+        $params = array_merge($params, $this->values);
+
         $sql = "UPDATE " . self::$table . " SET {$fields} WHERE {$conditions}";
         $stmt = self::$pdo->prepare($sql);
-        $stmt->execute($this->values);
+        $stmt->execute($params); // initialize parameters safety
                 
         return $stmt->rowCount();
     }
