@@ -163,6 +163,41 @@ class PDOQueryBuilderTest extends TestCase
         $this->assertCount(5, $result);
     }
 
+    public function testItCanReturnsEmptyArrayWhenRecordNotFound(): void
+    {
+        $this->multipleInsertIntoDb(5);
+
+        $result = PDOQueryBuilder::table('users')
+            ->where('name', 'dummy')
+            ->get();
+
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
+    }
+
+    public function testItCanReturnsNullWhenFirstRecordNotFound(): void
+    {
+        $this->multipleInsertIntoDb(5);
+
+        $result = PDOQueryBuilder::table('users')
+            ->where('name', 'dummy')
+            ->first();
+
+        $this->assertNull($result);
+    }
+
+    public function testItCanReturnsZeroWhenRecordNotFoundForUpdate(): void
+    {
+        $this->multipleInsertIntoDb(5);
+
+        $result = PDOQueryBuilder::table('users')
+            ->table('users')
+            ->where('name', 'dummy')
+            ->update(['name' => 'Test']);
+
+        $this->assertEquals(0, $result);
+    }
+
     private function insertIntoDb(array $data = []): int
     {
         $data = array_merge([
