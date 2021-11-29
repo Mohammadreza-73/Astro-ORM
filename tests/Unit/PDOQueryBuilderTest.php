@@ -127,6 +127,18 @@ class PDOQueryBuilderTest extends TestCase
         $this->assertEquals($id, $result->id);
     }
 
+    public function testItCanFindBy(): void
+    {
+        $this->insertIntoDb();
+        $id = $this->insertIntoDb(['name' => 'Row for find by']);
+
+        $result = PDOQueryBuilder::table('users')
+            ->findBy('name', 'Row for find by');
+
+        $this->assertIsObject($result);
+        $this->assertEquals($id, $result->id);
+    }
+
     private function insertIntoDb(array $data = []): int
     {
         $data = array_merge([

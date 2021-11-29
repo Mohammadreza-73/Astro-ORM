@@ -130,6 +130,11 @@ class PDOQueryBuilder
         return $this->where('id', $id)->first();
     }
 
+    public function findBy(string $column, mixed $value)
+    {
+        return $this->where($column, $value)->first();
+    }
+
     public static function truncateAllTable(): void
     {
         $stmt = self::$pdo->prepare("SHOW TABLES");
