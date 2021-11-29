@@ -115,6 +115,18 @@ class PDOQueryBuilderTest extends TestCase
         $this->assertObjectHasAttribute('skill', $result);
     }
 
+    public function testItCanFindWithId(): void
+    {
+        $this->insertIntoDb();
+        $id = $this->insertIntoDb(['name' => 'Row for find']);
+
+        $result = PDOQueryBuilder::table('users')
+            ->find($id);
+
+        $this->assertIsObject($result);
+        $this->assertEquals($id, $result->id);
+    }
+
     private function insertIntoDb(array $data = []): int
     {
         $data = array_merge([

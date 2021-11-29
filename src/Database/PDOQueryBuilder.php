@@ -125,6 +125,11 @@ class PDOQueryBuilder
         return empty($data) ? null : $data[0];
     }
 
+    public function find(int $id)
+    {
+        return $this->where('id', $id)->first();
+    }
+
     public static function truncateAllTable(): void
     {
         $stmt = self::$pdo->prepare("SHOW TABLES");
