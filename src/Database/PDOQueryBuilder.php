@@ -118,6 +118,13 @@ class PDOQueryBuilder
         return $stmt->fetchAll();
     }
 
+    public function first(array $columns = ['*'])
+    {
+        $data = $this->get($columns);
+
+        return empty($data) ? null : $data[0];
+    }
+
     public static function truncateAllTable(): void
     {
         $stmt = self::$pdo->prepare("SHOW TABLES");

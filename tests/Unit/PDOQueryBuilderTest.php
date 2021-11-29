@@ -81,6 +81,24 @@ class PDOQueryBuilderTest extends TestCase
         $this->assertCount(10, $result);
     }
 
+    public function testItCanGetSpecificColumns(): void
+    {
+        $this->multipleInsertIntoDb(10);
+
+        $result = PDOQueryBuilder::table('users')
+            ->where('skill', 'PHP')
+            ->get(['name', 'skill']); // Get specific columns
+
+        $this->assertIsArray($result);
+        $this->assertObjectHasAttribute('name', $result[0]);
+        $this->assertObjectHasAttribute('skill', $result[0]);
+
+        /** Tips: Convert object to array */
+        $result = json_decode(json_encode($result[0]), true);
+        /** Expected object has to include only specific columns */
+        $this->assertEquals(['name', 'skill'], array_keys($result));
+    }
+    
     private function insertIntoDb(array $data = []): int
     {
         $data = array_merge([
