@@ -64,6 +64,23 @@ class PDOQueryBuilderTest extends TestCase
         $this->assertEquals(5, $result);
     }
 
+    public function testItCanGetData(): void
+    {
+        $this->multipleInsertIntoDb(10);
+        $this->multipleInsertIntoDb(10, [
+            'name' => 'Ali',
+            'skill' => 'Javascript'
+        ]);
+
+        $result = PDOQueryBuilder::table('users')
+            ->where('name', 'Ali')
+            ->where('skill', 'Javascript')
+            ->get();
+
+        $this->assertIsArray($result);
+        $this->assertCount(10, $result);
+    }
+
     private function insertIntoDb(array $data = []): int
     {
         $data = array_merge([

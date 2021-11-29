@@ -101,6 +101,23 @@ class PDOQueryBuilder
         return $stmt->rowCount();
     }
 
+    public function get(array $columns = ['*']): array
+    {
+        $columns = implode(', ', $columns);
+
+        $conditions = '';
+        if (isset($this->conditions)) {
+            $conditions = implode(' AND ', $this->conditions);
+            $conditions = " WHERE $conditions";
+        }
+
+        $sql = "SELECT {$columns} FROM " . self::$table . "{$conditions}";
+        $stmt = self::$pdo->prepare($sql);
+        $stmt->execute($this->values ?? []);
+        
+        return $stmt->fetchAll();
+    }
+
     public static function truncateAllTable(): void
     {
         $stmt = self::$pdo->prepare("SHOW TABLES");
