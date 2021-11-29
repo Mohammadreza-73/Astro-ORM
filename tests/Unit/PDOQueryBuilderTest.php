@@ -98,7 +98,23 @@ class PDOQueryBuilderTest extends TestCase
         /** Expected object has to include only specific columns */
         $this->assertEquals(['name', 'skill'], array_keys($result));
     }
-    
+
+    public function testItCanGetFirstRow(): void
+    {
+        $this->multipleInsertIntoDb(2, ['name' => 'First Row']);
+        $this->multipleInsertIntoDb(10, ['name' => 'Another Row']);
+
+        $result = PDOQueryBuilder::table('users')
+            ->where('name', 'First Row')
+            ->first();
+            
+        $this->assertIsObject($result);
+        $this->assertObjectHasAttribute('id', $result);
+        $this->assertObjectHasAttribute('name', $result);
+        $this->assertObjectHasAttribute('email', $result);
+        $this->assertObjectHasAttribute('skill', $result);
+    }
+
     private function insertIntoDb(array $data = []): int
     {
         $data = array_merge([
