@@ -11,7 +11,7 @@ class PDOQueryBuilder
     private array $conditions;
     private array $values;
     private string $operator;
-
+    private array $order;
     
     private static $pdo;
     private static $table;
@@ -111,7 +111,15 @@ class PDOQueryBuilder
             $conditions = " WHERE $conditions";
         }
 
-        $sql = "SELECT {$columns} FROM " . self::$table . "{$conditions}";
+        $order = '';
+        if (isset($this->order)) {
+            $orderColumn = $this->order['column'];
+            $sort = $this->order['sort'];
+
+            $order = " ORDER BY {$orderColumn} {$sort}";
+        }
+
+        $sql = "SELECT {$columns} FROM " . self::$table . "{$conditions}{$order}";
         $stmt = self::$pdo->prepare($sql);
         $stmt->execute($this->values ?? []);
         
@@ -133,6 +141,16 @@ class PDOQueryBuilder
     public function findBy(string $column, mixed $value)
     {
         return $this->where($column, $value)->first();
+    }
+
+    public function orderBy(string $column, string $sort = 'ASC'): self
+    {
+        $this->order = [
+            'column' => $this->orderColumn = $column,
+            'sort' => $this->sort = $sort
+        ];
+        
+        return $this;
     }
 
     public static function truncateAllTable(): void

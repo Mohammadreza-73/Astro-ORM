@@ -139,6 +139,19 @@ class PDOQueryBuilderTest extends TestCase
         $this->assertEquals($id, $result->id);
     }
 
+    public function testItCanGetOrderdData(): void
+    {
+        $this->multipleInsertIntoDb(10, ['skill' => 'Laravel']);
+        $this->insertIntoDb(['skill' => 'Zend']);
+        
+        $result = PDOQueryBuilder::table('users')
+            ->orderBy('skill', 'DESC')
+            ->get();
+        
+        $this->assertIsArray($result);
+        $this->assertEquals('Zend', $result[0]->skill); // First row
+    }
+
     private function insertIntoDb(array $data = []): int
     {
         $data = array_merge([
