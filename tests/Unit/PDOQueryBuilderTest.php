@@ -32,7 +32,23 @@ class PDOQueryBuilderTest extends TestCase
         $result = PDOQueryBuilder::table('users')
             ->where('name', 'Mohammadreza')
             ->where('skill', 'PHP')
-            ->update(['skill' => 'Javascript', 'name' => 'Ali', 'email' => 'ali@gmail.com']);
+            ->update([
+                'skill' => 'Javascript', 
+                'name' => 'Ali', 
+                'email' => 'ali@gmail.com'
+            ]);
+
+        $this->assertEquals(1, $result);
+    }
+
+    public function testItCanUpdateDataWithMultipleWhere(): void
+    {
+        $this->insertIntoDb();
+        $this->insertIntoDb(['name' => 'Ali']);
+
+        $result = PDOQueryBuilder::table('users')
+            ->where('name', 'Ali')
+            ->update(['skill' => 'Javascript']);
 
         $this->assertEquals(1, $result);
     }
@@ -59,11 +75,13 @@ class PDOQueryBuilderTest extends TestCase
         return PDOQueryBuilder::table('users')->create($data);
     }
 
-    private function multipleInsertIntoDb(int $count): void
+    private function multipleInsertIntoDb(int $count, array $data = []): int
     {
         for ($i = 0; $i < $count; $i++) {
-            $this->insertIntoDb();
+            $this->insertIntoDb($data);
         }
+
+        return $count; // Number of inserted rows in database
     }
 
     public function tearDown(): void

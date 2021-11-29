@@ -10,6 +10,8 @@ class PDOQueryBuilder
 {
     private array $conditions;
     private array $values;
+    private string $operator;
+
     
     private static $pdo;
     private static $table;
@@ -51,15 +53,16 @@ class PDOQueryBuilder
         return (int) self::$pdo->lastInsertId();
     }
 
-    public function where(string $column, string $value, string $operator = '=')
+    public function where(string $column, string $value, string $operator = '='): self
     {
+        $this->operator = $operator;
         $this->conditions[] = "{$column}{$operator}?";
         $this->values[] = $value;
 
         return $this;
     }
 
-    public function update(array $data)
+    public function update(array $data): int
     {
         $fields = [];
         $params = [];
@@ -87,7 +90,7 @@ class PDOQueryBuilder
         return $stmt->rowCount();
     }
 
-    public function delete()
+    public function delete(): int
     {
         $conditions = implode(' AND ', $this->conditions);
         
@@ -98,7 +101,7 @@ class PDOQueryBuilder
         return $stmt->rowCount();
     }
 
-    public static function truncateAllTable()
+    public static function truncateAllTable(): void
     {
         $stmt = self::$pdo->prepare("SHOW TABLES");
         $stmt->execute();
