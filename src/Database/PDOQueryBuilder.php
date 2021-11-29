@@ -12,6 +12,7 @@ class PDOQueryBuilder
     private array $values;
     private string $operator;
     private array $order;
+    private int $limit;
     
     private static $pdo;
     private static $table;
@@ -119,7 +120,12 @@ class PDOQueryBuilder
             $order = " ORDER BY {$orderColumn} {$sort}";
         }
 
-        $sql = "SELECT {$columns} FROM " . self::$table . "{$conditions}{$order}";
+        $limit = '';
+        if (isset($this->limit)) {
+            $limit = " LIMIT {$this->limit}";
+        }
+
+        $sql = "SELECT {$columns} FROM " . self::$table . "{$conditions}{$order}{$limit}";
         $stmt = self::$pdo->prepare($sql);
         $stmt->execute($this->values ?? []);
         
@@ -150,6 +156,13 @@ class PDOQueryBuilder
             'sort' => $this->sort = $sort
         ];
         
+        return $this;
+    }
+
+    public function limit(int $limit): self
+    {
+        $this->limit = $limit;
+
         return $this;
     }
 

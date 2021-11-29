@@ -152,6 +152,17 @@ class PDOQueryBuilderTest extends TestCase
         $this->assertEquals('Zend', $result[0]->skill); // First row
     }
 
+    public function testItCanLimitData(): void
+    {
+        $this->multipleInsertIntoDb(10);
+
+        $result = PDOQueryBuilder::table('users')
+            ->limit(5)
+            ->get();
+        
+        $this->assertCount(5, $result);
+    }
+
     private function insertIntoDb(array $data = []): int
     {
         $data = array_merge([
