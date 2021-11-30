@@ -44,10 +44,14 @@ class PDOQueryBuilderTest extends TestCase
     public function testItCanUpdateDataWithMultipleWhere(): void
     {
         $this->insertIntoDb();
-        $this->insertIntoDb(['name' => 'Ali']);
+        $this->insertIntoDb([
+            'name' => 'Ali',
+            'skill' => "JS"
+        ]);
 
         $result = PDOQueryBuilder::table('users')
             ->where('name', 'Ali')
+            ->where('skill', 'JS')
             ->update(['skill' => 'Javascript']);
 
         $this->assertEquals(1, $result);

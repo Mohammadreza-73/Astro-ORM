@@ -8,11 +8,12 @@ use App\Database\PDODatabaseConnection;
 
 class PDOQueryBuilder
 {
-    private array $conditions;
+    private ?string $conditions = null;
     private array $values;
     private string $operator;
     private array $order;
     private int $limit;
+    private $stmt;
     
     private static $pdo;
     private static $table;
@@ -46,18 +47,23 @@ class PDOQueryBuilder
 
         $fields = implode(', ', $fields);
         $placeHolder = implode(', ', $placeHolders);
-        
+        $this->values = array_values($data);
+
         $sql = "INSERT INTO " . self::$table . " ({$fields}) VALUES({$placeHolder})";
-        $stmt = self::$pdo->prepare($sql);
-        $stmt->execute(array_values($data));
+        $this->execute($sql, $this->values);
 
         return (int) self::$pdo->lastInsertId();
     }
 
     public function where(string $column, string $value, string $operator = '='): self
     {
+        if (is_null($this->conditions)) {
+            $this->conditions = "{$column}{$operator}?";
+        } else {
+            $this->conditions .= " AND {$column}{$operator}?";
+        }
+        
         $this->operator = $operator;
-        $this->conditions[] = "{$column}{$operator}?";
         $this->values[] = $value;
 
         return $this;
@@ -73,7 +79,6 @@ class PDOQueryBuilder
         }
         
         $fields = implode(', ', $fields);
-        $conditions = implode(' AND ', $this->conditions);
 
         /** 
          * Make array of params for sanitization and
@@ -83,23 +88,19 @@ class PDOQueryBuilder
          * then use condition values
          */
         $params = array_merge($params, $this->values);
-
-        $sql = "UPDATE " . self::$table . " SET {$fields} WHERE {$conditions}";
-        $stmt = self::$pdo->prepare($sql);
-        $stmt->execute($params); // initialize parameters safety
+        
+        $sql = "UPDATE " . self::$table . " SET {$fields} WHERE {$this->conditions}";
+        $this->execute($sql, $params);
                 
-        return $stmt->rowCount();
+        return $this->stmt->rowCount();
     }
 
     public function delete(): int
     {
-        $conditions = implode(' AND ', $this->conditions);
-        
-        $sql = "DELETE FROM " . self::$table . " WHERE {$conditions}";
-        $stmt = self::$pdo->prepare($sql);
-        $stmt->execute($this->values);
+        $sql = "DELETE FROM " . self::$table . " WHERE {$this->conditions}";
+        $this->execute($sql, $this->values);
 
-        return $stmt->rowCount();
+        return $this->stmt->rowCount();
     }
 
     public function get(array $columns = ['*']): array
@@ -108,8 +109,7 @@ class PDOQueryBuilder
 
         $conditions = '';
         if (isset($this->conditions)) {
-            $conditions = implode(' AND ', $this->conditions);
-            $conditions = " WHERE $conditions";
+            $conditions = " WHERE {$this->conditions}";
         }
 
         $order = '';
@@ -126,10 +126,9 @@ class PDOQueryBuilder
         }
 
         $sql = "SELECT {$columns} FROM " . self::$table . "{$conditions}{$order}{$limit}";
-        $stmt = self::$pdo->prepare($sql);
-        $stmt->execute($this->values ?? []);
+        $this->execute($sql, $this->values ?? []);
         
-        return $stmt->fetchAll();
+        return $this->stmt->fetchAll();
     }
 
     public function first(array $columns = ['*'])
@@ -184,5 +183,14 @@ class PDOQueryBuilder
     public static function rollback(): void
     {
         self::$pdo->rollback();       
+    }
+
+    private function execute(string $sql, mixed $params = '')
+    {
+        $this->stmt = self::$pdo->prepare($sql);
+        $this->stmt->execute($params);
+        $this->values = [];
+
+        return $this;
     }
 }
