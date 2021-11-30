@@ -22,7 +22,7 @@ class PDOQueryBuilder
     
     public function __construct()
     {
-        $config = $this->getConfig('database', 'pdo_testing');
+        $config = $this->getConfigs('database', 'pdo_testing');
         $pdoConnection = new PDODatabaseConnection($config);
 
         if (is_null(self::$pdo)) {

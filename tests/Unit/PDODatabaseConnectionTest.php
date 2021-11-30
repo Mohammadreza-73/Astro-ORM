@@ -18,7 +18,7 @@ class PDODatabaseConnectionTest extends TestCase
 
     public function setUp(): void
     {
-        $this->config = $this->getConfig('database', 'pdo_testing');
+        $this->config = $this->getConfigs('database', 'pdo_testing');
 
         parent::setUp();
     }
