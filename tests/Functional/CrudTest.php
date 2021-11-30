@@ -19,7 +19,7 @@ class CrudTest extends TestCase
         parent::setUp();
     }
 
-    public function testItCanCreateDataWithApi(): void
+    public function testItCanCreateDataWithApi()
     {
         $data = [
             'json' => [
@@ -38,6 +38,30 @@ class CrudTest extends TestCase
             ->first();
 
         $this->assertNotNull($result);
+
+        return $result;
+    }
+
+    /**
+     * @depends testItCanCreateDataWithApi
+     */
+    public function testItCanUpdateDataWithApi($result): void
+    {
+        $data = [
+            'json' => [
+                'id' => $result->id,
+                'name' => 'api for update'
+            ]
+        ];
+
+        $response = $this->httpClient->put('index.php', $data);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $response = PDOQueryBuilder::table('users')
+            ->find($result->id);
+
+        $this->assertNotNull($response);
+        $this->assertEquals('api for update', $response->name);
     }
 
     public function tearDown(): void

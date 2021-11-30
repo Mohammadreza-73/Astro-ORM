@@ -23,3 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     json_response(null, 200);
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    PDOQueryBuilder::table('users')
+    ->where('id', request()['id'])
+    ->update(request());
+
+    json_response(null, 200);
+}
