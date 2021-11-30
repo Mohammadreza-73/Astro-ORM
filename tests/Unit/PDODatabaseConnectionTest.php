@@ -13,19 +13,27 @@ use App\Exceptions\PDODatabaseConnectionException;
 class PDODatabaseConnectionTest extends TestCase
 {
     use HasConfig;
+
+    private $config = [];
+
+    public function setUp(): void
+    {
+        $this->config = $this->getConfig('database', 'pdo_testing');
+
+        parent::setUp();
+    }
     
     public function testPDODatabaseConnectionImplementsDatabaseConnectionInterface(): void
     {
-        $config = $this->getConfig();
-        $pdoConnection = new PDODatabaseConnection($config);
+        
+        $pdoConnection = new PDODatabaseConnection($this->config);
         
         $this->assertInstanceOf(DatabaseConnectionInterface::class, $pdoConnection,);
     }
 
     public function testConnectMethodShouldReturnsValidInstance()
     {
-        $config = $this->getConfig();
-        $pdoConnection = new PDODatabaseConnection($config);
+        $pdoConnection = new PDODatabaseConnection($this->config);
         $pdoHandler = $pdoConnection->connect();
 
         $this->assertInstanceOf(PDODatabaseConnection::class, $pdoHandler);
@@ -44,9 +52,8 @@ class PDODatabaseConnectionTest extends TestCase
     {
         $this->expectException(PDODatabaseConnectionException::class);
 
-        $config = $this->getConfig();
-        $config['db_name'] = 'dummy';
-        $pdoConnection = new PDODatabaseConnection($config);
+        $this->config['db_name'] = 'dummy';
+        $pdoConnection = new PDODatabaseConnection($this->config);
         $pdoConnection->connect();
     }
 
@@ -55,9 +62,8 @@ class PDODatabaseConnectionTest extends TestCase
         $this->expectException(ConfigNotValidException::class);
         $this->expectExceptionMessage('Database Config in not valid.');
 
-        $config = $this->getConfig();
-        unset($config['db_name']);
-        $pdoConnection = new PDODatabaseConnection($config);
+        unset($this->config['db_name']);
+        $pdoConnection = new PDODatabaseConnection($this->config);
         $pdoConnection->connect();
     }
 }

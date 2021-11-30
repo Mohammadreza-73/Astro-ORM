@@ -6,8 +6,8 @@ use App\Helpers\Config;
 
 trait HasConfig
 {
-    public function getConfig(): array
+    public function getConfig(string $fileName, ?string $key = null): array
     {
-        return Config::get('database', 'pdo_testing');
+        return Config::get($fileName, $key);
     }
 }
