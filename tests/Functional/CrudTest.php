@@ -8,13 +8,11 @@ use App\Database\PDOQueryBuilder;
 
 class CrudTest extends TestCase
 {
-    private $queryBuilder;
     private $httpClient;
 
     public function setUp(): void
     {
-        $this->queryBuilder = new PDOQueryBuilder();
-        $this->httpClient   = new HttpClient();
+        $this->httpClient = new HttpClient();
         
         parent::setUp();
     }
@@ -30,26 +28,26 @@ class CrudTest extends TestCase
         ];
 
         $response = $this->httpClient->post('index.php', $data);
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(201, $response->getStatusCode());
 
-        $result = PDOQueryBuilder::table('users')
+        $user = PDOQueryBuilder::table('users')
             ->where('name', 'Api')
             ->where('skill', 'restfull')
             ->first();
 
-        $this->assertNotNull($result);
+        $this->assertNotNull($user);
 
-        return $result;
+        return $user;
     }
 
     /**
      * @depends testItCanCreateDataWithApi
      */
-    public function testItCanUpdateDataWithApi($result): void
+    public function testItCanUpdateDataWithApi($user): void
     {
         $data = [
             'json' => [
-                'id' => $result->id,
+                'id' => $user->id,
                 'name' => 'api for update'
             ]
         ];
@@ -58,10 +56,25 @@ class CrudTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         $response = PDOQueryBuilder::table('users')
-            ->find($result->id);
+            ->find($user->id);
 
         $this->assertNotNull($response);
         $this->assertEquals('api for update', $response->name);
+    }
+
+    /**
+     * @depends testItCanCreateDataWithApi
+     */
+    public function testItCanFetchDataWithApi($user): void
+    {
+        $response = $this->httpClient->get('index.php', [
+            'json' => [
+                'id' => $user->id
+            ]
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertArrayHasKey('id', json_decode($response->getBody(), true));
     }
 
     public function tearDown(): void

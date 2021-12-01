@@ -4,7 +4,7 @@ use App\Database\PDOQueryBuilder;
 
 require_once "./vendor/autoload.php";
 
-function json_response(?array $data = null, int $statusCode = 200)
+function json_response($data = null, int $statusCode = 200)
 {
     header_remove();
     header('Content-Type: application/json');
@@ -21,7 +21,7 @@ function request()
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     PDOQueryBuilder::table('users')->create(request());
 
-    json_response(null, 200);
+    json_response(null, 201); // 201: created
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
@@ -30,4 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     ->update(request());
 
     json_response(null, 200);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $user = PDOQueryBuilder::table('users')
+        ->find(request()['id']);
+
+    json_response($user, 200);
 }
