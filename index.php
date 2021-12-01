@@ -38,3 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     json_response($user, 200);
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    PDOQueryBuilder::table('users')
+        ->where('id', request()['id'])
+        ->delete();
+
+    json_response(null, 204);
+}

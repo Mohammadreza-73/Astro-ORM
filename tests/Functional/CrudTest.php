@@ -77,6 +77,25 @@ class CrudTest extends TestCase
         $this->assertArrayHasKey('id', json_decode($response->getBody(), true));
     }
 
+    /**
+     * @depends testItCanCreateDataWithApi
+     */
+    public function testItCanDeleteDataWithApi($user): void
+    {
+        $response = $this->httpClient->delete('index.php', [
+            'json' => [
+                'id' => $user->id
+            ]
+        ]);
+
+        $this->assertEquals(204, $response->getStatusCode()); // 204: No content
+
+        $response = PDOQueryBuilder::table('users')
+            ->find($user->id);
+
+        $this->assertNull($response);
+    }
+
     public function tearDown(): void
     {
         $this->httpClient = null;
