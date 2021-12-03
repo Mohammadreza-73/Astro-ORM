@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use App\Database\PDOQueryBuilder;
+use App\Exceptions\RecordNotFoundException;
 
 class PDOQueryBuilderTest extends TestCase
 {
@@ -200,6 +201,17 @@ class PDOQueryBuilderTest extends TestCase
             ->update(['name' => 'Test']);
 
         $this->assertEquals(0, $result);
+    }
+
+    public function testItCanThrowExceptionWhenFirstRecordNotFound(): void
+    {
+        $this->multipleInsertIntoDb(5);
+
+        $this->expectException(RecordNotFoundException::class);
+
+        PDOQueryBuilder::table('users')
+            ->where('name', 'dummy')
+            ->firstOrFail();
     }
 
     private function insertIntoDb(array $data = []): int

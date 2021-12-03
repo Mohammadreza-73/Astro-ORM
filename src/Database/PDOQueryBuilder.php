@@ -5,6 +5,7 @@ namespace App\Database;
 use PDO;
 use App\Traits\HasConfig;
 use App\Database\PDODatabaseConnection;
+use App\Exceptions\RecordNotFoundException;
 
 class PDOQueryBuilder
 {
@@ -136,6 +137,11 @@ class PDOQueryBuilder
         $data = $this->get($columns);
 
         return empty($data) ? null : $data[0];
+    }
+
+    public function firstOrFail(array $columns = ['*'])
+    {
+        return $this->first($columns) ?: throw new RecordNotFoundException();
     }
 
     public function find(int $id)
