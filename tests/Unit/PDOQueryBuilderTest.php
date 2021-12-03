@@ -214,6 +214,16 @@ class PDOQueryBuilderTest extends TestCase
             ->firstOrFail();
     }
 
+    public function testItCanThrowExceptoinWhenCanNotFindRecord(): void
+    {
+        $id = $this->multipleInsertIntoDb(5);
+
+        $this->expectException(RecordNotFoundException::class);
+
+        PDOQueryBuilder::table('users')
+            ->findOrFail($id + 1);
+    }
+
     private function insertIntoDb(array $data = []): int
     {
         $data = array_merge([

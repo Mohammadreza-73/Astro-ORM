@@ -149,6 +149,11 @@ class PDOQueryBuilder
         return $this->where('id', $id)->first();
     }
 
+    public function findOrFail(int $id)
+    {
+        return $this->find($id) ?: throw new RecordNotFoundException();
+    }
+
     public function findBy(string $column, mixed $value)
     {
         return $this->where($column, $value)->first();
