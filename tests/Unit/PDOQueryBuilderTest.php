@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use App\Database\PDOQueryBuilder;
 use App\Exceptions\RecordNotFoundException;
+use PDO;
 
 class PDOQueryBuilderTest extends TestCase
 {
@@ -222,6 +223,28 @@ class PDOQueryBuilderTest extends TestCase
 
         PDOQueryBuilder::table('users')
             ->findOrFail($id + 1);
+    }
+
+    public function testItCanFetchDataWithMultipleOrWhere(): void
+    {
+        $this->multipleInsertIntoDb(5);
+        $this->multipleInsertIntoDb(5, [
+            'name' => 'Ali',
+            'skill' => 'JS',
+        ]);
+
+        $result = PDOQueryBuilder::table('users')
+            ->orWhere('skill', 'PHP')
+            ->orWhere('skill', 'JS')
+            ->get();
+
+        $this->assertCount(10, $result);
+        /** This scope should contains user with PHP skill */
+        $scope1 = json_decode(json_encode($result[0]), true);
+        $this->assertEquals('PHP', $scope1['skill']);
+    /** This scope should contains user with JS skill */
+        $scope2 = json_decode(json_encode($result[5]), true);
+        $this->assertEquals('JS', $scope2['skill']);
     }
 
     private function insertIntoDb(array $data = []): int

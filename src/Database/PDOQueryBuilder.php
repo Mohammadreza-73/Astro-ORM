@@ -10,6 +10,7 @@ use App\Exceptions\RecordNotFoundException;
 class PDOQueryBuilder
 {
     private ?string $conditions = null;
+    private string $conditionStatus = 'AND';
     private array $values;
     private string $operator;
     private array $order;
@@ -18,6 +19,8 @@ class PDOQueryBuilder
     
     private static $pdo;
     private static $table;
+
+    private const CONDITION_STATUS = 'AND';
 
     use HasConfig;
     
@@ -60,12 +63,24 @@ class PDOQueryBuilder
     {
         if (is_null($this->conditions)) {
             $this->conditions = "{$column}{$operator}?";
-        } else {
+
+        } elseif ($this->conditionStatus === 'AND') {
             $this->conditions .= " AND {$column}{$operator}?";
+
+        } else {
+            $this->conditions .= " OR {$column}{$operator}?";
         }
         
         $this->operator = $operator;
         $this->values[] = $value;
+
+        return $this;
+    }
+
+    public function orWhere(string $column, string $value, string $operator = '='): self
+    {
+        $this->conditionStatus = 'OR';
+        $this->where($column, $value, $operator);
 
         return $this;
     }
