@@ -9,12 +9,8 @@ use PDO;
 
 class PDOQueryBuilderTest extends TestCase
 {
-    private $queryBuilder;
-
     public function setUp(): void
     {
-        $this->queryBuilder = new PDOQueryBuilder();
-
         PDOQueryBuilder::beginTransaction();
         parent::setUp();
     }

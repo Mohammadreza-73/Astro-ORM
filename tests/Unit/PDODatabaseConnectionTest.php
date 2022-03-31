@@ -28,7 +28,7 @@ class PDODatabaseConnectionTest extends TestCase
         
         $pdoConnection = new PDODatabaseConnection($this->config);
         
-        $this->assertInstanceOf(DatabaseConnectionInterface::class, $pdoConnection,);
+        $this->assertInstanceOf(DatabaseConnectionInterface::class, $pdoConnection);
     }
 
     public function testConnectMethodShouldReturnsValidInstance()
