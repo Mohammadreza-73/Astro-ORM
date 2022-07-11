@@ -1,10 +1,13 @@
-# Astro ORM
+<h1 align="center">
+     Astro ORM
+</h1>
 
 object-relational mapper (ORM), lets you query and manipulate data with fluent api from a database using an object-oriented paradigm.
 
-## How its works
+## 👀 How its works
 
-<img src="docs/UML Diagram.jpg" alt="UML">
+<img src="docs/UML Diagram.jpg" alt="UML" align="center">
+
 ### 1. Setup your database configs
 Fill the ``` configs/database.php ``` file with your database configuration.
 
@@ -150,3 +153,6 @@ $result = PDOQueryBuilder::table('users')
     ->orderBy('skill', 'DESC')
     ->get();
 ```
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
