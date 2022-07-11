@@ -5,8 +5,9 @@
 object-relational mapper (ORM), lets you query and manipulate data with fluent api from a database using an object-oriented paradigm.
 
 ## 👀 How its works
-
-<img src="docs/UML Diagram.jpg" alt="UML" align="center">
+<p align="center">
+    <img src="docs/UML Diagram.jpg" alt="UML" align="center">
+</p>
 
 ### 1. Setup your database configs
 Fill the ``` configs/database.php ``` file with your database configuration.
