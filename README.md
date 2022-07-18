@@ -4,6 +4,12 @@
 
 object-relational mapper (ORM), lets you query and manipulate data with fluent api from a database using an object-oriented paradigm.
 
+## ⬇️ Installation
+You can install the package via the composer:
+```
+composer require m.rahimi/astro-orm
+```
+
 ## 👀 How its works
 <p align="center">
     <img src="docs/UML Diagram.jpg" alt="UML" align="center">
