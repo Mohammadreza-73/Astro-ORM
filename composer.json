@@ -1,5 +1,5 @@
 {
-    "name": "mohammadreza/astro-orm",
+    "name": "m.rahimi/astro-orm",
     "description": "Simple Object Relational Mapper for manipulate data with fluent interface.",
     "keywords": ["database", "sql", "orm", "fluent-interface"],
     "type": "library",
@@ -15,6 +15,7 @@
         }
     ],
     "require": {
+        "php": "^7.2.5||^8.2",
         "guzzlehttp/guzzle": "^7.0"
     },
     "autoload": {
@@ -26,5 +27,8 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }
